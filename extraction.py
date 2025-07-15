@@ -78,9 +78,9 @@ def get_kkt_loss(args, values, l, y, model):
 
 def get_verify_loss(args, x, l):
     loss_verify = 0
-    loss_verify += 1 * (x - 1).relu().pow(2).sum()
-    loss_verify += 1 * (-1 - x).relu().pow(2).sum()
-    loss_verify += 5 * (-l + args.extraction_min_lambda).relu().pow(2).sum()
+    loss_verify += args.extraction_alpha_prior * (x - 1).relu().pow(2).sum()
+    loss_verify += args.extraction_alpha_prior * (-1 - x).relu().pow(2).sum()
+    loss_verify += args.extraction_alpha_lambda * (-l + args.extraction_min_lambda).relu().pow(2).sum()
 
     return loss_verify
 

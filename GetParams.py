@@ -38,9 +38,11 @@ def get_args(*args):
     parser.add_argument('--save_args_files', default='true', type=str2bool, help='')
 
     # wandb
-    parser.add_argument('--wandb_active', default='false', type=str2bool, help='actviate wandb logging')
-    parser.add_argument('--wandb_project_name', default='Dataset_Extraction', help='')
-    parser.add_argument('--wandb_entity', default='dataset_extraction', help='')
+    parser.add_argument('--wandb_active', default='false', type=str2bool, help='activate wandb logging')
+    parser.add_argument('--wandb_project_name', default='RevisitKKTAttack', help='')
+    parser.add_argument('--wandb_entity', default='GuyAndYehonathan', help='')
+    parser.add_argument('--wandb_login', default='', help='')
+    parser.add_argument('--wandb_id', default='', help='')
 
     # data creation
     parser.add_argument('--problem', help='')
@@ -80,6 +82,8 @@ def get_args(*args):
     parser.add_argument('--extraction_min_lambda', default=0.05, type=float, help='minimum lambda in the extraction loss')
     parser.add_argument('--extraction_loss_type', default='kkt', help='options: kkt, naive')
     parser.add_argument('--extraction_stop_threshold', default=5000, type=int)
+    parser.add_argument('--extraction_alpha_prior', default=1.0, type=float, help='')
+    parser.add_argument('--extraction_alpha_lambda', default=5.0, type=float, help='')
     if not isinstance(args, list):
         args = args[0]
     args = parser.parse_args(args)
