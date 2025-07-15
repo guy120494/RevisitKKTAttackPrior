@@ -178,9 +178,9 @@ def data_extraction(args, dataset_loader, model):
 
         if epoch % args.extraction_evaluate_rate == 0:
             extraction_score = evaluate_extraction(args, epoch, kkt_loss, loss_verify, x, x0, y0, ds_mean)
-            if epoch >= args.extraction_stop_threshold and extraction_score > 3300:
-                print('Extraction Score is too low. Epoch:', epoch, 'Score:', extraction_score)
-                break
+            # if epoch >= args.extraction_stop_threshold and extraction_score > 3300:
+            #     print('Extraction Score is too low. Epoch:', epoch, 'Score:', extraction_score)
+            #     break
 
         # send extraction output to wandb
         if (args.extract_save_results_every > 0 and epoch % args.extract_save_results_every == 0) \
