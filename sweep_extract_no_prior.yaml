@@ -78,7 +78,7 @@ parameters:
   extraction_epochs:
     distribution: categorical
     values:
-      - 150000
+      - 50000
   extraction_lr:
     distribution: categorical
     values:
