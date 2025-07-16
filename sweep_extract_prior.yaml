@@ -107,7 +107,6 @@ parameters:
   extraction_alpha_prior:
     distribution: categorical
     values:
-      - 0
       - 1
       - 2
   extraction_min_lambda:
