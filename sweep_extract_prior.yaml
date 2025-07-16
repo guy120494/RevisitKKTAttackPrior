@@ -34,7 +34,7 @@ parameters:
   problem:
     distribution: categorical
     values:
-      - mnist_odd_even
+      - cifar10_vehicles_animals
   proj_name:
     distribution: categorical
     values:
@@ -118,7 +118,7 @@ parameters:
   model_use_bias:
     distribution: categorical
     values:
-      - true
+      - false
   model_hidden_list:
     values:
       - "[1000, 1000]"
