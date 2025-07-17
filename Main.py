@@ -17,6 +17,7 @@ from GetParams import get_args
 thread_limit = threadpoolctl.threadpool_limits(limits=8)
 os.environ['QT_QPA_PLATFORM'] = 'offscreen'
 
+
 ###############################################################################
 #                               Train                                         #
 ###############################################################################
@@ -104,13 +105,16 @@ def train(args, train_loader, test_loader, val_loader, model):
             test_error, test_loss, _ = epoch_ce(args, test_loader, model, args.device, None, None)
             if val_loader is not None:
                 validation_error, validation_loss, _ = epoch_ce(args, val_loader, model, args.device, None, None)
-                print(now(), f'Epoch {epoch}: train-loss = {train_loss:.8g} ; train-error = {train_error:.4g} ; test-loss = {test_loss:.8g} ; test-error = {test_error:.4g} ; validation-loss = {validation_loss:.8g} ; validation-error = {validation_error:.4g} ; p-std = {output.abs().std()}; p-val = {output.abs().mean()}')
+                print(now(),
+                      f'Epoch {epoch}: train-loss = {train_loss:.8g} ; train-error = {train_error:.4g} ; test-loss = {test_loss:.8g} ; test-error = {test_error:.4g} ; validation-loss = {validation_loss:.8g} ; validation-error = {validation_error:.4g} ; p-std = {output.abs().std()}; p-val = {output.abs().mean()}')
             else:
                 print(now(),
                       f'Epoch {epoch}: train-loss = {train_loss:.8g} ; train-error = {train_error:.4g} ; test-loss = {test_loss:.8g} ; test-error = {test_error:.4g} ; p-std = {output.abs().std()}; p-val = {output.abs().mean()}')
 
             if args.wandb_active:
-                wandb.log({"epoch": epoch, "train loss": train_loss, 'train error': train_error, 'p-val':output.abs().mean(), 'p-std': output.abs().std()})
+                wandb.log(
+                    {"epoch": epoch, "train loss": train_loss, 'train error': train_error, 'p-val': output.abs().mean(),
+                     'p-std': output.abs().std()})
                 if val_loader is not None:
                     wandb.log({'validation loss': validation_loss, 'validation error': validation_error})
                 wandb.log({'test loss': test_loss, 'test error': test_error})
@@ -134,7 +138,6 @@ def train(args, train_loader, test_loader, val_loader, model):
 ###############################################################################
 
 def data_extraction(args, dataset_loader, model):
-
     # we use dataset only for shapes and post-visualization (adding mean if it was reduced)
     x0, y0 = next(iter(dataset_loader))
     print('X:', x0.shape, x0.device)
@@ -267,8 +270,9 @@ def main_reconstruct(args, train_loader):
 def validate_settings_exists():
     if os.path.isfile("settings.py"):
         return
-    raise FileNotFoundError("You should create a 'settings.py' file with the contents of 'settings.deafult.py', " + 
+    raise FileNotFoundError("You should create a 'settings.py' file with the contents of 'settings.deafult.py', " +
                             "adjusted according to your system")
+
 
 def train_and_extract(args, train_loader, test_loader, val_loader):
     print('TRAIN AND EXTRACT')
@@ -292,7 +296,7 @@ def main():
     create_dirs_save_files(args)
     print('ARGS:')
     print(args)
-    print('*'*100)
+    print('*' * 100)
 
     if args.cuda:
         print(f'os.environ["CUDA_VISIBLE_DEVICES"]={os.environ["CUDA_VISIBLE_DEVICES"]}')
