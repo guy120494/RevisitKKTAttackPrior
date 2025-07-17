@@ -3,8 +3,30 @@ import torchvision
 
 import wandb
 from common_utils.common import now
-from CreateModel import Flatten
+from CreateModel import Flatten, get_activation
 from evaluations import get_evaluation_score_dssim, viz_nns
+
+
+def replace_relu_with_modified_relu(args, model):
+    """
+    Replace all instances of nn.ReLU in a model with ModifiedReLU (threshold=300).
+
+    Args:
+        model (nn.Module): The PyTorch model to modify
+
+    Returns:
+        nn.Module: The modified model
+    """
+    for name, module in model.named_children():
+        # If the module is a ReLU
+        if isinstance(module, torch.nn.ReLU):
+            # Create and set the ModifiedReLU
+            setattr(model, name, get_activation(args.extraction_model_activation, args.extraction_model_relu_alpha))
+        # If the module has children, recursively process them
+        elif len(list(module.children())) > 0:
+            replace_relu_with_modified_relu(args, module)
+
+    return model
 
 
 def l2_dist(x, y):
@@ -63,7 +85,8 @@ def get_kkt_loss(args, values, l, y, model):
     grad = torch.autograd.grad(
         outputs=output,
         inputs=model.parameters(),
-        grad_outputs=torch.ones_like(output, requires_grad=False, device=output.device).div(args.extraction_data_amount),
+        grad_outputs=torch.ones_like(output, requires_grad=False, device=output.device).div(
+            args.extraction_data_amount),
         create_graph=True,
         retain_graph=True,
     )
@@ -148,6 +171,7 @@ def evaluate_extraction(args, epoch, loss_extract, loss_verify, x, x0, y0, ds_me
             "extraction dssim": wandb.Image(dssim_grid),
         })
 
-    print(f'{now()} T={epoch} ; Losses: extract={loss_extract.item():5.10g} verify={loss_verify.item():5.5g} grads={x_grad.abs().mean()} Extraction-Score={extraction_score} Extraction-DSSIM={dssim_score}')
+    print(
+        f'{now()} T={epoch} ; Losses: extract={loss_extract.item():5.10g} verify={loss_verify.item():5.5g} grads={x_grad.abs().mean()} Extraction-Score={extraction_score} Extraction-DSSIM={dssim_score}')
 
     return extraction_score

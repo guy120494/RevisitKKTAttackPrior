@@ -11,7 +11,7 @@ import common_utils
 from common_utils.common import AverageValueMeter, load_weights, now, save_weights
 from CreateData import setup_problem
 from CreateModel import create_model
-from extraction import calc_extraction_loss, evaluate_extraction, get_trainable_params
+from extraction import calc_extraction_loss, evaluate_extraction, get_trainable_params, replace_relu_with_modified_relu
 from GetParams import get_args
 
 thread_limit = threadpoolctl.threadpool_limits(limits=8)
@@ -270,6 +270,19 @@ def validate_settings_exists():
     raise FileNotFoundError("You should create a 'settings.py' file with the contents of 'settings.deafult.py', " + 
                             "adjusted according to your system")
 
+def train_and_extract(args, train_loader, test_loader, val_loader):
+    print('TRAIN AND EXTRACT')
+    print('START TRAINING')
+    model = create_model(args, extraction=False)
+    if args.wandb_active:
+        wandb.watch(model)
+
+    trained_model = train(args, train_loader, test_loader, val_loader, model)
+    print('START EXTRACTING')
+    trained_model = replace_relu_with_modified_relu(args, trained_model)
+    trained_model.eval()
+    data_extraction(args, train_loader, trained_model)
+
 
 def main():
     print(now(), 'STARTING!')
@@ -297,6 +310,8 @@ def main():
     # reconstruct
     elif args.run_mode == 'reconstruct':
         main_reconstruct(args, train_loader)
+    elif args.run_mode == 'train_reconstruct':
+        train_and_extract(args, train_loader, test_loader, val_loader)
     else:
         raise ValueError(f'no such args.run_mode={args.run_mode}')
 
