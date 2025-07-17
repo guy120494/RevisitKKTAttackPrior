@@ -314,6 +314,7 @@ def main():
     # reconstruct
     elif args.run_mode == 'reconstruct':
         main_reconstruct(args, train_loader)
+    # train and reconstruct
     elif args.run_mode == 'train_reconstruct':
         train_and_extract(args, train_loader, test_loader, val_loader)
     else:
