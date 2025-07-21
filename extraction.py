@@ -65,11 +65,13 @@ def diversity_loss(x, min_dist):
 def get_trainable_params(args, x0):
     if args.problem == 'gauss':
         _, d = x0.shape
-        x = torch.randn(args.extraction_data_amount, d).to(args.device) * args.extraction_init_scale
+        x = torch.randn(args.extraction_data_amount, d).to(
+            args.device) * args.extraction_init_scale + args.extraction_init_bias
         l = torch.rand(args.extraction_data_amount, 1).to(args.device)
     else:
         _, c, h, w = x0.shape
-        x = torch.randn(args.extraction_data_amount, c, h, w).to(args.device) * args.extraction_init_scale
+        x = torch.randn(args.extraction_data_amount, c, h, w).to(
+            args.device) * args.extraction_init_scale + args.extraction_init_bias
         l = torch.rand(args.extraction_data_amount, 1).to(args.device)
     x.requires_grad_(True)
     l.requires_grad_(True)
@@ -198,4 +200,3 @@ def evaluate_extraction_gauss(args, epoch, loss_extract, loss_verify, x, x0):
             "number of extraction with distance less than 1": torch.sum(v < 1).detach().cpu().numpy(),
             "Histogram of Distances": wandb.Histogram(v.detach().cpu().numpy())
         })
-
