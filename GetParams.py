@@ -70,6 +70,8 @@ def get_args(*args):
     parser.add_argument('--train_threshold', default=1e-40, type=float, help='stop training below this loss')
     parser.add_argument('--train_SGD', default='false', type=str2bool, help='')
     parser.add_argument('--train_SGD_batch_size', default=64, type=int, help='')
+    parser.add_argument('--train_gauss_init_scale', default=1.0, type=float, help='')
+    parser.add_argument('--train_gauss_init_bias', default=0.0, type=float, help='')
 
     # extraction
     parser.add_argument('--extraction_epochs', default=1000, type=int, help='')
