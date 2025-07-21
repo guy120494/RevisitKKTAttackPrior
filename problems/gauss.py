@@ -29,13 +29,13 @@ def get_dataloader(args):
 
     # Generate random samples directly
     train_x = np.random.randn(args.data_amount, args.input_dim)
-    train_y = np.sign(train_x[:, 0]).astype(np.float32)
+    train_y = (np.sign(train_x[:, 0]).astype(np.float32) + 1) / 2
 
     train_x, train_y = torch.from_numpy(train_x), torch.from_numpy(train_y)
     train_x, train_y = move_to_type_device(train_x, train_y, args.device)
 
     test_x = np.random.randn(args.data_test_amount, args.input_dim)
-    test_y = np.sign(test_x[:, 0]).astype(np.float32)
+    test_y = (np.sign(test_x[:, 0]).astype(np.float32) + 1) / 2
 
     test_x, test_y = torch.from_numpy(test_x), torch.from_numpy(test_y)
     test_x, test_y = move_to_type_device(test_x, test_y, args.device)
