@@ -27,25 +27,30 @@ def get_dataloader(args):
     args.data_use_test = True
     args.data_test_amount = 1000
 
-    # Generate random samples directly
+    parent_dir = Path(args.datasets_dir) / 'gauss'
+    parent_dir.mkdir(parents=True, exist_ok=True)
+    train_file = parent_dir / f'train_scale_{args.train_gauss_init_scale}_bias_{args.train_gauss_init_bias}'
+    test_file = parent_dir / f'test_scale_{args.train_gauss_init_scale}_bias_{args.train_gauss_init_bias}'
+    if train_file.exists() and test_file.exists():
+        train_x, train_y = torch.load(train_file)
+        test_x, test_y = torch.load(test_file)
+    else:
+        train_x, train_y, test_x, test_y = generate_dataset(args)
+        torch.save([train_x, train_y], train_file)
+        torch.save([test_x, test_y], test_file)
+
+    return [(train_x, train_y)], [(test_x, test_y)], None
+
+
+def generate_dataset(args):
     train_x = np.random.randn(args.data_amount,
                               args.input_dim) * args.train_gauss_init_scale + args.train_gauss_init_bias
     train_y = (np.sign(train_x[:, 0]).astype(np.float32) + 1) / 2
-
     train_x, train_y = torch.from_numpy(train_x), torch.from_numpy(train_y)
     train_x, train_y = move_to_type_device(train_x, train_y, args.device)
-
     test_x = np.random.randn(args.data_test_amount,
                              args.input_dim) * args.train_gauss_init_scale + args.train_gauss_init_bias
     test_y = (np.sign(test_x[:, 0]).astype(np.float32) + 1) / 2
-
     test_x, test_y = torch.from_numpy(test_x), torch.from_numpy(test_y)
     test_x, test_y = move_to_type_device(test_x, test_y, args.device)
-
-    parent_dir = Path(args.datasets_dir) / 'gauss'
-    parent_dir.mkdir(parents=True, exist_ok=True)
-
-    torch.save([train_x, train_y], parent_dir / 'train')
-    torch.save([test_x, test_y], parent_dir / 'test')
-
-    return [(train_x, train_y)], [(test_x, test_y)], None
+    return train_x, train_y, test_x, test_y
