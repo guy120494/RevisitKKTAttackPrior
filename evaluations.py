@@ -39,14 +39,17 @@ def ncc_dist(x, y, div_dim=False):
 
 
 def transform_vmin_vmax_batch(x, min_max=None):
-    """ Transform each image in x: [min, max] --> [0, 1]"""
+    """Transform each image in x: [min, max] --> [0, 1], per image."""
     if min_max is None:
-        vmin = x.data.reshape(x.shape[0], -1).min(dim=1)[0][:, None, None, None]
-        vmax = x.data.reshape(x.shape[0], -1).max(dim=1)[0][:, None, None, None]
+        # Compute min and max per sample across all dimensions except batch
+        dims = tuple(range(1, x.ndim))  # e.g., (1, 2, 3) for NCHW
+        vmin = x.amin(dim=dims, keepdim=True)
+        vmax = x.amax(dim=dims, keepdim=True)
     else:
         vmin, vmax = min_max
-    return (x - vmin).div(vmax - vmin)
-
+    # Prevent division by zero
+    scale = (vmax - vmin).clamp(min=1e-8)
+    return (x - vmin) / scale
 
 def viz_nns(x, y, max_per_nn=None, metric='ncc', ret_all=False):
     """
