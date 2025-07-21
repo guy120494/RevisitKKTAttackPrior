@@ -11,7 +11,8 @@ import common_utils
 from common_utils.common import AverageValueMeter, load_weights, now, save_weights
 from CreateData import setup_problem
 from CreateModel import create_model
-from extraction import calc_extraction_loss, evaluate_extraction, get_trainable_params, replace_relu_with_modified_relu
+from extraction import calc_extraction_loss, evaluate_extraction, get_trainable_params, replace_relu_with_modified_relu, \
+    evaluate_extraction_gauss
 from GetParams import get_args
 
 thread_limit = threadpoolctl.threadpool_limits(limits=8)
@@ -163,7 +164,7 @@ def data_extraction(args, dataset_loader, model):
     print('y type,shape:', y.type(), y.shape)
     print('l type,shape:', l.type(), l.shape)
 
-    torch.save(y, os.path.join(args.output_dir, "y.pth"))
+    # torch.save(y, os.path.join(args.output_dir, "y.pth"))
     if args.wandb_active:
         wandb.save(os.path.join(wandb.run.dir, "y.pth"), base_path=args.wandb_base_path)
 
@@ -178,12 +179,14 @@ def data_extraction(args, dataset_loader, model):
         loss.backward()
         opt_x.step()
         opt_l.step()
-
         if epoch % args.extraction_evaluate_rate == 0:
-            extraction_score = evaluate_extraction(args, epoch, kkt_loss, loss_verify, x, x0, y0, ds_mean)
-            # if epoch >= args.extraction_stop_threshold and extraction_score > 3300:
-            #     print('Extraction Score is too low. Epoch:', epoch, 'Score:', extraction_score)
-            #     break
+            if args.problem == 'gauss':
+                evaluate_extraction_gauss(args, epoch, kkt_loss, loss_verify, x, x0)
+            else:
+                extraction_score = evaluate_extraction(args, epoch, kkt_loss, loss_verify, x, x0, y0, ds_mean)
+                # if epoch >= args.extraction_stop_threshold and extraction_score > 3300:
+                #     print('Extraction Score is too low. Epoch:', epoch, 'Score:', extraction_score)
+                #     break
 
         # send extraction output to wandb
         if (args.extract_save_results_every > 0 and epoch % args.extract_save_results_every == 0) \

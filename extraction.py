@@ -63,10 +63,15 @@ def diversity_loss(x, min_dist):
 
 
 def get_trainable_params(args, x0):
-    n, c, h, w = x0.shape
-    x = torch.randn(args.extraction_data_amount, c, h, w).to(args.device) * args.extraction_init_scale
+    if args.problem == 'gauss':
+        _, d = x0.shape
+        x = torch.randn(args.extraction_data_amount, d).to(args.device) * args.extraction_init_scale
+        l = torch.rand(args.extraction_data_amount, 1).to(args.device)
+    else:
+        _, c, h, w = x0.shape
+        x = torch.randn(args.extraction_data_amount, c, h, w).to(args.device) * args.extraction_init_scale
+        l = torch.rand(args.extraction_data_amount, 1).to(args.device)
     x.requires_grad_(True)
-    l = torch.rand(args.extraction_data_amount, 1).to(args.device)
     l.requires_grad_(True)
     opt_x = torch.optim.SGD([x], lr=args.extraction_lr, momentum=0.9)
     opt_l = torch.optim.SGD([l], lr=args.extraction_lambda_lr, momentum=0.9)
@@ -175,3 +180,22 @@ def evaluate_extraction(args, epoch, loss_extract, loss_verify, x, x0, y0, ds_me
         f'{now()} T={epoch} ; Losses: extract={loss_extract.item():5.10g} verify={loss_verify.item():5.5g} grads={x_grad.abs().mean()} Extraction-Score={extraction_score} Extraction-DSSIM={dssim_score}')
 
     return extraction_score
+
+
+def evaluate_extraction_gauss(args, epoch, loss_extract, loss_verify, x, x0):
+    x = x.clone().data
+    xx = x.data.clone()
+    yy = x0.clone()
+    _, v, _, _, _ = viz_nns(xx, yy, metric='l2', ret_all=True)
+    # _, v_best_5, _, _, _ = viz_nns(xx, yy, metric='l2', ret_all=True, max_per_nn=5)
+
+    if args.wandb_active:
+        wandb.log({
+            "extraction epoch": epoch,
+            "loss extract": loss_extract,
+            "loss verify": loss_verify,
+            "average distance extraction training": torch.mean(v).detach().cpu().numpy(),
+            "number of extraction with distance less than 1": torch.sum(v < 1).detach().cpu().numpy(),
+            "Histogram of Distances": wandb.Histogram(v.detach().cpu().numpy())
+        })
+
