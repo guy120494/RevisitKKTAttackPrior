@@ -200,3 +200,4 @@ def evaluate_extraction_gauss(args, epoch, loss_extract, loss_verify, x, x0):
             "number of extraction with distance less than 1": torch.sum(v < 1).detach().cpu().numpy(),
             "Histogram of Distances": wandb.Histogram(v.detach().cpu().numpy())
         })
+        wandb.run.summary.update({"Histogram of Distances": wandb.Histogram(v.detach().cpu().numpy())})

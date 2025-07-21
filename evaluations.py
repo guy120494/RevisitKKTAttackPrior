@@ -51,6 +51,7 @@ def transform_vmin_vmax_batch(x, min_max=None):
     scale = (vmax - vmin).clamp(min=1e-8)
     return (x - vmin) / scale
 
+
 def viz_nns(x, y, max_per_nn=None, metric='ncc', ret_all=False):
     """
     return a batch, for each image in x, its nn in y
@@ -177,9 +178,6 @@ def get_model_outputs_on_grid(model, lim=1.5, n=1000):
     y_coord = torch.linspace(-lim, lim, n)
     grid = torch.stack(torch.meshgrid([x_coord, y_coord], indexing=None))
     zi = model(grid.reshape(2, -1).t().to('cuda')).reshape(n, n).cpu().data
-    xi = grid[0,:,:].cpu()
-    yi = grid[1,:,:].cpu()
+    xi = grid[0, :, :].cpu()
+    yi = grid[1, :, :].cpu()
     return xi, yi, zi
-
-
-
