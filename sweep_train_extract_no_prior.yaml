@@ -18,7 +18,16 @@ parameters:
   data_reduce_mean:
     distribution: categorical
     values:
-      - true
+      - false
+  train_lr:
+    distribution: categorical
+    values:
+      - 0.01
+      - 0.1
+  train_epochs:
+    distribution: categorical
+    values:
+      - 150000
   model_train_activation:
     distribution: categorical
     values:
