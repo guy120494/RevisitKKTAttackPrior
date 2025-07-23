@@ -188,8 +188,8 @@ def evaluate_extraction_gauss(args, epoch, loss_extract, loss_verify, x, x0):
     x = x.clone().data
     xx = x.data.clone()
     yy = x0.clone()
-    _, v, _, _, _ = viz_nns(xx, yy, metric='l2', ret_all=True)
-    # _, v_best_5, _, _, _ = viz_nns(xx, yy, metric='l2', ret_all=True, max_per_nn=5)
+    # _, v, _, _, _ = viz_nns(xx, yy, metric='l2', ret_all=True)
+    _, v, _, _, _ = viz_nns(xx, yy, metric='l2', ret_all=True, max_per_nn=1)
 
     if args.wandb_active:
         wandb.log({
