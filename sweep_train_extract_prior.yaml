@@ -1,0 +1,133 @@
+method: random
+metric:
+  goal: minimize
+  name: loss
+parameters:
+  cuda:
+    distribution: categorical
+    values:
+      - true
+  data_per_class_test:
+    distribution: categorical
+    values:
+      - 1000
+  data_per_class_train:
+    distribution: categorical
+    values:
+      - 250
+  data_reduce_mean:
+    distribution: categorical
+    values:
+      - true
+  model_train_activation:
+    distribution: categorical
+    values:
+      - "relu"
+  model_type:
+    distribution: categorical
+    values:
+      - mlp
+  precision:
+    distribution: categorical
+    values:
+      - double
+  problem:
+    distribution: categorical
+    values:
+      - gauss
+  proj_name:
+    distribution: categorical
+    values:
+      - cifar_vehicles_animals
+  run_mode:
+    distribution: categorical
+    values:
+      - reconstruct
+  use_init_scale:
+    distribution: categorical
+    values:
+      - false
+  wandb_active:
+    distribution: categorical
+    values:
+      - true
+  wandb_project_name:
+    distribution: categorical
+    values:
+      - RevisitKKTAttack
+  save_args_files:
+    distribution: categorical
+    values:
+      - false
+  train_save_model:
+    distribution: categorical
+    values:
+      - false
+  extraction_model_activation:
+    distribution: categorical
+    values:
+      - "modifiedrelu"
+  extract_save_results:
+    distribution: categorical
+    values:
+      - false
+  extract_save_results_every:
+    distribution: categorical
+    values:
+      - 0
+  extraction_epochs:
+    distribution: categorical
+    values:
+      - 100000
+  extraction_lr:
+    distribution: categorical
+    values:
+      - 1
+      - 0.5
+      - 0.1
+  extraction_lambda_lr:
+    distribution: categorical
+    values:
+      - 1
+      - 0.5
+      - 0.1
+  extraction_model_relu_alpha:
+    distribution: categorical
+    values:
+      - 20
+  extraction_init_scale:
+    distribution: categorical
+    values:
+      - 0.01
+      - 1
+      - 10
+  extraction_data_amount_per_class:
+    distribution: categorical
+    values:
+      - 500
+  extraction_alpha_prior:
+    distribution: categorical
+    values:
+      - 1
+  extraction_min_lambda:
+    distribution: categorical
+    values:
+      - 0
+      - 0.5
+  pretrained_model_path:
+    distribution: categorical
+    values:
+      - "weights-cifar10_vehicles_animals_d250_cifar10_vehicles_animals.pth"
+  model_use_bias:
+    distribution: categorical
+    values:
+      - false
+  model_hidden_list:
+    values:
+      - "[1000, 1000]"
+    distribution: categorical
+  seed:
+    distribution: categorical
+    values:
+      - 1
+program: Main.py

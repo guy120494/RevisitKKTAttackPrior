@@ -190,14 +190,15 @@ def evaluate_extraction_gauss(args, epoch, loss_extract, loss_verify, x, x0):
     yy = x0.clone()
     # _, v, _, _, _ = viz_nns(xx, yy, metric='l2', ret_all=True)
     _, v, _, _, _ = viz_nns(xx, yy, metric='l2', ret_all=True, max_per_nn=1)
-
+    v = torch.sort(v)
     if args.wandb_active:
         wandb.log({
             "extraction epoch": epoch,
             "loss extract": loss_extract,
             "loss verify": loss_verify,
             "average distance extraction training": torch.mean(v).detach().cpu().numpy(),
-            "number of extraction with distance less than 1": torch.sum(v < 1).detach().cpu().numpy(),
+            "Minimum distance": torch.min(v).detach().cpu().numpy(),
+            "Average distance of 5 best extractions": torch.mean(v[:5]).detach().cpu().numpy(),
             "Histogram of Distances": wandb.Histogram(v.detach().cpu().numpy())
         })
         wandb.run.summary.update({"Histogram of Distances": wandb.Histogram(v.detach().cpu().numpy())})
