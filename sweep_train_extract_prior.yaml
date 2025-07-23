@@ -38,7 +38,7 @@ parameters:
   proj_name:
     distribution: categorical
     values:
-      - cifar_vehicles_animals
+      - gauss
   run_mode:
     distribution: categorical
     values:
