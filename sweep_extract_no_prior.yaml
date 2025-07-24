@@ -18,7 +18,7 @@ parameters:
   data_reduce_mean:
     distribution: categorical
     values:
-      - true
+      - false
   model_train_activation:
     distribution: categorical
     values:
@@ -34,11 +34,11 @@ parameters:
   problem:
     distribution: categorical
     values:
-      - cifar10_vehicles_animals
+      - gauss
   proj_name:
     distribution: categorical
     values:
-      - cifar_vehicles_animals
+      - gauss
   run_mode:
     distribution: categorical
     values:
@@ -97,9 +97,15 @@ parameters:
   extraction_init_scale:
     distribution: categorical
     values:
-      - 0.01
       - 0.1
       - 1
+      - 5
+  extraction_init_bias:
+    distribution: categorical
+    values:
+      - 0
+      - 1
+      - 5
   extraction_data_amount_per_class:
     distribution: categorical
     values:
@@ -116,7 +122,7 @@ parameters:
   pretrained_model_path:
     distribution: categorical
     values:
-      - "weights-cifar10_vehicles_animals_d250_cifar10_vehicles_animals.pth"
+      - "weights-gauss_250d_gauss.pth"
   model_use_bias:
     distribution: categorical
     values:
