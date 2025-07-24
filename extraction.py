@@ -189,7 +189,7 @@ def evaluate_extraction_gauss(args, epoch, loss_extract, loss_verify, x, x0):
     xx = x.data.clone()
     yy = x0.clone()
     # _, v, _, _, _ = viz_nns(xx, yy, metric='l2', ret_all=True)
-    _, v, _, _, _ = viz_nns(xx, yy, metric='l2', ret_all=True, max_per_nn=1)
+    _, v, _, _, _ = viz_nns(xx, yy, metric='l2', ret_all=True)
     v, _ = torch.sort(v)
     if args.wandb_active:
         wandb.log({

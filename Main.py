@@ -182,6 +182,9 @@ def data_extraction(args, dataset_loader, model):
         if epoch % args.extraction_evaluate_rate == 0:
             if args.problem == 'gauss':
                 evaluate_extraction_gauss(args, epoch, kkt_loss, loss_verify, x, x0)
+                if args.wandb_active:
+                    wandb.log({'extraction margin': torch.min(torch.abs(y * model(x).squeeze()))})
+                    wandb.log({'real margin': torch.min(torch.abs((y0 * 2 - 1) * model(x0).squeeze()))})
             else:
                 extraction_score = evaluate_extraction(args, epoch, kkt_loss, loss_verify, x, x0, y0, ds_mean)
                 # if epoch >= args.extraction_stop_threshold and extraction_score > 3300:
