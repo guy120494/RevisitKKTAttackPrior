@@ -75,7 +75,7 @@ def get_trainable_params(args, x0):
         x = torch.randn(args.extraction_data_amount, d).to(args.device)
         x = x / x.norm(dim=1, keepdim=True)
         x = args.extraction_init_scale * x
-        x[:, random_coor] +=args.extraction_init_bias
+        x[:, random_coor] += args.extraction_init_bias
         l = torch.rand(args.extraction_data_amount, 1).to(args.device)
     else:
         _, c, h, w = x0.shape
