@@ -173,7 +173,6 @@ def data_extraction(args, dataset_loader, model):
         values = model(x).squeeze()
         loss, kkt_loss, loss_verify = calc_extraction_loss(args, l, model, values, x, y)
         if np.isnan(kkt_loss.item()):
-            error_info["epoch"] = epoch
             raise ValueError(f'Optimizer diverged during extraction. {error_info}')
         opt_x.zero_grad()
         opt_l.zero_grad()
@@ -184,7 +183,8 @@ def data_extraction(args, dataset_loader, model):
             if p.grad is not None:
                 error_info[name + "grad_norm"] = float("{:.4f}".format(p.grad.data.norm(2).item()))
         error_info["loss"] = kkt_loss.item()
-
+        error_info["epoch"] = epoch
+        print(error_info)
         opt_x.step()
         opt_l.step()
 
