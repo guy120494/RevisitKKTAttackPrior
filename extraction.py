@@ -65,14 +65,17 @@ def diversity_loss(x, min_dist):
 def get_trainable_params(args, x0):
     if args.problem == 'gauss':
         _, d = x0.shape
-        x = torch.randn(args.extraction_data_amount, d).to(
-            args.device) * args.extraction_init_scale + args.extraction_init_bias
+        random_coor = torch.randint(0, d + 1, (1,))
+        x = torch.randn(args.extraction_data_amount, d).to(args.device) * args.extraction_init_scale
+        x[:, random_coor] += args.extraction_init_bias
         l = torch.rand(args.extraction_data_amount, 1).to(args.device)
     elif args.problem == 'sphere':
         _, d = x0.shape
+        random_coor = torch.randint(0, d + 1, (1,))
         x = torch.randn(args.extraction_data_amount, d).to(args.device)
         x = x / x.norm(dim=1, keepdim=True)
-        x = args.extraction_init_scale * x + args.extraction_init_bias
+        x = args.extraction_init_scale * x
+        x[:, random_coor] +=args.extraction_init_bias
         l = torch.rand(args.extraction_data_amount, 1).to(args.device)
     else:
         _, c, h, w = x0.shape
