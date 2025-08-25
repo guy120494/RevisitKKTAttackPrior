@@ -104,6 +104,7 @@ parameters:
     distribution: categorical
     values:
       - 0
+      - 1
       - 5
   extraction_data_amount_per_class:
     distribution: categorical
