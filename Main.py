@@ -8,7 +8,7 @@ import datetime
 import wandb
 
 import common_utils
-from common_utils.common import AverageValueMeter, load_weights, now, save_weights
+from common_utils.common import AverageValueMeter, load_weights, now, save_weights, move_weights
 from CreateData import setup_problem
 from CreateModel import create_model
 from extraction import calc_extraction_loss, evaluate_extraction, get_trainable_params, replace_relu_with_modified_relu, \
@@ -276,6 +276,7 @@ def main_reconstruct(args, train_loader):
     extraction_model = create_model(args, extraction=True)
     extraction_model.eval()
     extraction_model = load_weights(extraction_model, args.pretrained_model_path, device=args.device)
+    extraction_model = move_weights(extraction_model, args.extraction_move_data)
     print('EXTRACTION MODEL:')
     print(extraction_model)
 

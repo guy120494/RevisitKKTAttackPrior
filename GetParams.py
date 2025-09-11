@@ -92,6 +92,7 @@ def get_args(*args):
     parser.add_argument('--extraction_stop_threshold', default=5000, type=int)
     parser.add_argument('--extraction_alpha_prior', default=1.0, type=float, help='')
     parser.add_argument('--extraction_alpha_lambda', default=5.0, type=float, help='')
+    parser.add_argument('--extraction_move_data', default=0.0, type=float, help='')
     if not isinstance(args, list):
         args = args[0]
     args = parser.parse_args(args)
