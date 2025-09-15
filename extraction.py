@@ -160,16 +160,14 @@ def evaluate_extraction(args, epoch, loss_extract, loss_verify, x, x0, y0, ds_me
     if args.dataset == 'mnist':
         metric = 'l2'
 
-    qq, _ = viz_nns(xx, yy, max_per_nn=4, metric=metric)
+    qq, v = viz_nns(xx, yy, max_per_nn=1, metric=metric)
     extraction_grid = torchvision.utils.make_grid(qq[:100], normalize=False, nrow=10)
-    _, v = viz_nns(xx, yy, max_per_nn=1, metric=metric)
     extraction_score = v[:10].mean().item()
 
     xx += ds_mean
     yy += ds_mean
-    qq, _ = viz_nns(xx, yy, max_per_nn=4, metric=metric)
+    qq, v = viz_nns(xx, yy, max_per_nn=1, metric=metric)
     extraction_grid_with_mean = torchvision.utils.make_grid(qq[:100], normalize=False, nrow=10)
-    _, v = viz_nns(xx, yy, max_per_nn=1, metric=metric)
     extraction_score_with_mean = v[:10].mean().item()
 
     # SSIM EVALUATION
