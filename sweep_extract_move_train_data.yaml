@@ -107,7 +107,7 @@ parameters:
   extraction_move_data:
     distribution: categorical
     values:
-      - 0
+      - 0.5
       - 1
       - 2
       - 5

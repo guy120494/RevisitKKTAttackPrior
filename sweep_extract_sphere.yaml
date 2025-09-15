@@ -97,14 +97,17 @@ parameters:
   extraction_init_scale:
     distribution: categorical
     values:
-      - 0.1
       - 1
+      - 3
+      - 5
       - 10
   extraction_init_bias:
     distribution: categorical
     values:
       - 0
       - 1
+      - 3
+      - 5
       - 10
   extraction_data_amount_per_class:
     distribution: categorical
