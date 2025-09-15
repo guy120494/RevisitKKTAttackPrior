@@ -112,7 +112,7 @@ def get_evaluation_score_dssim(xxx, yyy, ds_mean, vote=None, show=False):
 
     x2search = torch.nn.functional.interpolate(xxx, scale_factor=1 / 2, mode='bicubic')
     y2search = torch.nn.functional.interpolate(yyy, scale_factor=1 / 2, mode='bicubic')
-    D = ncc_dist(y2search, x2search, div_dim=True)
+    D = ncc_dist(x2search, y2search, div_dim=True)
 
     dists, idxs = D.sort(dim=1, descending=False)
 
@@ -145,8 +145,17 @@ def get_evaluation_score_dssim(xxx, yyy, ds_mean, vote=None, show=False):
         xx = torch.cat(xs, dim=0).clone()
         yy = yyy
     else:
-        xx = xxx[idxs[:, 0]]
-        yy = yyy
+        D_flat = D.view(-1)
+        # Sort all values
+        sorted_vals, sorted_idxs = D_flat.sort(dim=0, descending=False)
+
+        # Convert flat indices back to (row, col)
+        rows = sorted_idxs // D.size(1)
+        cols = sorted_idxs % D.size(1)
+
+        # Stack into tuple indices
+        xx = xxx[rows[:xxx.shape[0]]]
+        yy = yyy[cols[:xxx.shape[0]]]
 
     # Scale to images
     yy += ds_mean
