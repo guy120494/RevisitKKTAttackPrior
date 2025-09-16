@@ -1,5 +1,3 @@
-__author__ = "Niv Haim, Weizmann Institute of Science"
-
 import torch
 import kornia.metrics as metrics
 from tqdm.auto import tqdm

@@ -1,4 +1,3 @@
-# @author: Niv Haim @ Weizmann Institute of Science
 # One-Liner for importing all important stuff for notebooks.
 # Just put this at the top line of the notebook:
 # from common_utils.import_for_notebooks import *
