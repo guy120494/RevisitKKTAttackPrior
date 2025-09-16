@@ -41,7 +41,7 @@ def get_args(*args):
     # wandb
     parser.add_argument('--wandb_active', default='false', type=str2bool, help='activate wandb logging')
     parser.add_argument('--wandb_project_name', default='RevisitKKTAttack', help='')
-    parser.add_argument('--wandb_entity', default='GuyAndYehonathan', help='')
+    parser.add_argument('--wandb_entity', default='', help='')
     parser.add_argument('--wandb_login', default='', help='')
     parser.add_argument('--wandb_id', default='', help='')
 
