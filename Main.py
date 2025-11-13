@@ -301,6 +301,7 @@ def train_and_extract(args, train_loader, test_loader, val_loader):
     print('START EXTRACTING')
     trained_model = replace_relu_with_modified_relu(args, trained_model)
     trained_model.eval()
+    trained_model = move_weights(trained_model, args.extraction_move_data)
     data_extraction(args, train_loader, trained_model)
 
 
