@@ -6,6 +6,15 @@ from torch.utils.data import DataLoader, Subset
 from torchvision import datasets, transforms
 
 
+def move_to_type_device(x, y, device):
+    print('X:', x.shape)
+    print('y:', y.shape)
+    x = x.to(torch.get_default_dtype())
+    y = y.to(torch.get_default_dtype())
+    x, y = x.to(device), y.to(device)
+    return x, y
+
+
 def create_labels(y0):
     return y0 % 2
 
@@ -93,6 +102,9 @@ def load_celebA_male_female(args):
 
     x0, y0 = get_balanced_data(args, train_loader, args.data_amount)
     x0_test, y0_test = get_balanced_data(args, test_loader, args.data_test_amount)
+
+    x0, y0 = move_to_type_device(x0, y0, args.device)
+    x0_test, y0_test = move_to_type_device(x0_test, y0_test, args.device)
 
     return [(x0, y0)], [(x0_test, y0_test)], None
 
