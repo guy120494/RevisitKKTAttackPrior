@@ -57,6 +57,7 @@ def get_args(*args):
     parser.add_argument('--model_hidden_list', default='[1000, 1000]', type=str2list,
                         help='should be a list, even for one item. ')
     parser.add_argument('--model_use_bias', default='false', type=str2bool, help='')
+    parser.add_argument('--model_use_residual', default='false', type=str2bool, help='')
 
     # train
     parser.add_argument('--use_init_scale', default='true', type=str2bool, help='')

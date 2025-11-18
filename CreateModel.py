@@ -48,19 +48,44 @@ class ModifiedRelu(nn.Module):
 
 
 class NeuralNetwork(nn.Module):
-    def __init__(self, input_dim, hidden_dim_list, output_dim, activation, use_bias=False):
+    def __init__(self, input_dim, hidden_dim_list, output_dim, activation, use_bias=False, residual=False):
         super().__init__()
+        self.residual = residual
         self.activation = activation
         self.layers = nn.ModuleList([nn.Linear(input_dim, hidden_dim_list[0])])
+        self.projections = nn.ModuleList()
+
+        # Add projection for first layer if dimensions don't match
+        if input_dim != hidden_dim_list[0]:
+            self.projections.append(nn.Linear(input_dim, hidden_dim_list[0], bias=False))
+        else:
+            self.projections.append(None)
+
+        # Add hidden layers and their projections
         for i in range(1, len(hidden_dim_list)):
-            self.layers.append(nn.Linear(hidden_dim_list[i-1], hidden_dim_list[i], bias=use_bias))
-        self.layers.append(nn.Linear(hidden_dim_list[-1], output_dim, bias=False))  # output layer
+            self.layers.append(nn.Linear(hidden_dim_list[i - 1], hidden_dim_list[i], bias=use_bias))
+            if hidden_dim_list[i - 1] != hidden_dim_list[i]:
+                self.projections.append(nn.Linear(hidden_dim_list[i - 1], hidden_dim_list[i], bias=False))
+            else:
+                self.projections.append(None)
+
+        # Output layer (no residual connection here)
+        self.layers.append(nn.Linear(hidden_dim_list[-1], output_dim, bias=False))
 
     def forward(self, data):
         feats = Flatten()(data)
-        for layer in self.layers[:-1]:
+
+        for i, layer in enumerate(self.layers[:-1]):
+            identity = feats
             feats = layer(feats)
             feats = self.activation(feats)
+
+            # Add residual connection with projection if needed
+            if self.residual:
+                if self.projections[i] is not None:
+                    identity = self.projections[i](identity)
+                feats = feats + identity
+
         feats = self.layers[-1](feats)
         return feats
 
@@ -74,7 +99,7 @@ def create_model(args, extraction):
     if args.model_type == 'mlp':
         model = NeuralNetwork(
             input_dim=args.input_dim, hidden_dim_list=args.model_hidden_list, output_dim=args.output_dim,
-            activation=activation, use_bias=args.model_use_bias
+            activation=activation, use_bias=args.model_use_bias, residual=args.model_use_residual
         )
     else:
         raise ValueError(f'No such args.model_type={args.model_type}')
