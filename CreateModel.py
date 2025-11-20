@@ -53,21 +53,22 @@ class NeuralNetwork(nn.Module):
         self.residual = residual
         self.activation = activation
         self.layers = nn.ModuleList([nn.Linear(input_dim, hidden_dim_list[0])])
-        self.projections = nn.ModuleList()
-
-        # Add projection for first layer if dimensions don't match
-        if input_dim != hidden_dim_list[0]:
-            self.projections.append(nn.Linear(input_dim, hidden_dim_list[0], bias=False))
-        else:
-            self.projections.append(None)
+        if self.residual:
+            self.projections = nn.ModuleList()
+            # Add projection for first layer if dimensions don't match
+            if input_dim != hidden_dim_list[0]:
+                self.projections.append(nn.Linear(input_dim, hidden_dim_list[0], bias=False))
+            else:
+                self.projections.append(None)
 
         # Add hidden layers and their projections
         for i in range(1, len(hidden_dim_list)):
             self.layers.append(nn.Linear(hidden_dim_list[i - 1], hidden_dim_list[i], bias=use_bias))
-            if hidden_dim_list[i - 1] != hidden_dim_list[i]:
-                self.projections.append(nn.Linear(hidden_dim_list[i - 1], hidden_dim_list[i], bias=False))
-            else:
-                self.projections.append(None)
+            if self.residual:
+                if hidden_dim_list[i - 1] != hidden_dim_list[i]:
+                    self.projections.append(nn.Linear(hidden_dim_list[i - 1], hidden_dim_list[i], bias=False))
+                else:
+                    self.projections.append(None)
 
         # Output layer (no residual connection here)
         self.layers.append(nn.Linear(hidden_dim_list[-1], output_dim, bias=False))

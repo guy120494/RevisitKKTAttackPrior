@@ -71,7 +71,7 @@ def get_trainable_params(args, x0):
         l = torch.rand(args.extraction_data_amount, 1).to(args.device)
     elif args.problem == 'sphere':
         _, d = x0.shape
-        random_coor = torch.randint(0, d + 1, (1,))
+        random_coor = torch.randint(0, d + 1, (1,)).detach()
         x = torch.randn(args.extraction_data_amount, d).to(args.device)
         x = x / x.norm(dim=1, keepdim=True)
         x = args.extraction_init_scale * x
@@ -82,10 +82,10 @@ def get_trainable_params(args, x0):
         radii = torch.rand(args.extraction_data_amount) * 3 + args.extraction_init_scale
         radii = radii.to(args.device)
         radii = radii.detach()
-        random_coor = torch.randint(0, d + 1, (1,))
+        random_coor = torch.randint(0, d + 1, (1,)).detach()
         x = torch.randn(args.extraction_data_amount, d).to(args.device)
         x = x / x.norm(dim=1, keepdim=True)
-        # x = radii.unsqueeze(1) * x
+        x = radii.unsqueeze(1) * x
         x[:, random_coor] += args.extraction_init_bias
         l = torch.rand(args.extraction_data_amount, 1).to(args.device)
     else:
@@ -109,7 +109,6 @@ def get_kkt_loss(args, values, l, y, model):
     assert values.shape == l.shape == y.shape
 
     output = values * l * y
-    torch.autograd.set_detect_anomaly(True)
     grad = torch.autograd.grad(
         outputs=output,
         inputs=model.parameters(),
