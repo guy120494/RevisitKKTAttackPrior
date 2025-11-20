@@ -85,7 +85,7 @@ def get_trainable_params(args, x0):
         random_coor = torch.randint(0, d + 1, (1,))
         x = torch.randn(args.extraction_data_amount, d).to(args.device)
         x = x / x.norm(dim=1, keepdim=True)
-        x = radii.unsqueeze(1) * x
+        # x = radii.unsqueeze(1) * x
         x[:, random_coor] += args.extraction_init_bias
         l = torch.rand(args.extraction_data_amount, 1).to(args.device)
     else:
