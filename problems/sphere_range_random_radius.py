@@ -18,7 +18,7 @@ def get_dataloader(args):
     args.data_use_test = True
     args.data_test_amount = 1000
 
-    parent_dir = Path(args.datasets_dir) / 'sphere'
+    parent_dir = Path(args.datasets_dir) / 'sphere_range'
     parent_dir.mkdir(parents=True, exist_ok=True)
     train_file = parent_dir / f'train_range_radius_{args.train_gauss_init_scale}_center_{args.train_gauss_init_bias}'
     test_file = parent_dir / f'test_range_radius_{args.train_gauss_init_scale}_center_{args.train_gauss_init_bias}'
