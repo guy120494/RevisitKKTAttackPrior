@@ -108,6 +108,7 @@ def get_kkt_loss(args, values, l, y, model):
     assert values.shape == l.shape == y.shape
 
     output = values * l * y
+    torch.autograd.set_detect_anomaly(True)
     grad = torch.autograd.grad(
         outputs=output,
         inputs=model.parameters(),
