@@ -147,6 +147,8 @@ def data_extraction(args, dataset_loader, model):
     if args.data_reduce_mean:
         ds_mean = x0.mean(dim=0, keepdims=True)
         x0 = x0 - ds_mean
+    else:
+        ds_mean = 0
 
     # # send inputs to wandb/notebook
     # if args.wandb_active:
