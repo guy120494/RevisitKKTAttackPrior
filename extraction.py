@@ -81,6 +81,7 @@ def get_trainable_params(args, x0):
         _, d = x0.shape
         radii = torch.rand(args.extraction_data_amount) * 3 + args.extraction_init_scale
         radii = radii.to(args.device)
+        radii = radii.detach()
         random_coor = torch.randint(0, d + 1, (1,))
         x = torch.randn(args.extraction_data_amount, d).to(args.device)
         x = x / x.norm(dim=1, keepdim=True)
@@ -108,7 +109,6 @@ def get_kkt_loss(args, values, l, y, model):
     assert values.shape == l.shape == y.shape
 
     output = values * l * y
-    torch.autograd.set_detect_anomaly(True)
     grad = torch.autograd.grad(
         outputs=output,
         inputs=model.parameters(),
