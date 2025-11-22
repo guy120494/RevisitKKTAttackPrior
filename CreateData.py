@@ -23,6 +23,9 @@ def setup_problem(args):
     elif args.problem == 'sphere_range':
         from problems.sphere_range_random_radius import get_dataloader
         return get_dataloader(args)
+    elif args.problem == 'subspace':
+        from problems.subspace import get_dataloader
+        return get_dataloader(args)
     else:
         raise ValueError(f'Unknown args.problem={args.problem}')
     return data_loader

@@ -88,6 +88,13 @@ def get_trainable_params(args, x0):
         x = radii.unsqueeze(1) * x
         x[:, random_coor] += args.extraction_init_bias
         l = torch.rand(args.extraction_data_amount, 1).to(args.device)
+    elif args.problem == 'subspace':
+        _, d = x0.shape
+        basis = torch.eye(args.input_dim)[:, d // 2:].to(args.device)
+        coeffs = torch.rand(size=(args.extraction_data_amount, d // 2)).to(args.device)
+        coeffs = coeffs * args.extraction_init_scale
+        x = coeffs @ basis.T
+        l = torch.rand(args.extraction_data_amount, 1).to(args.device)
     else:
         _, c, h, w = x0.shape
         x = torch.randn(args.extraction_data_amount, c, h, w).to(
