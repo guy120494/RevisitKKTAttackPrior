@@ -191,7 +191,7 @@ def data_extraction(args, dataset_loader, model):
         opt_l.step()
 
         if epoch % args.extraction_evaluate_rate == 0:
-            if args.problem in ['gauss', 'sphere', 'sphere_range']:
+            if args.problem in ['gauss', 'sphere', 'sphere_range', 'subspace']:
                 evaluate_extraction_gauss(args, epoch, kkt_loss, loss_verify, x, x0)
                 if args.wandb_active:
                     wandb.log({'extraction margin': torch.min(torch.abs(y * model(x).squeeze()))})
